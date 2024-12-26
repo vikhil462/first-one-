@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">EAMCET Practice</a>
+        
+        <div class="ms-auto d-flex align-items-center">
+            <!-- User welcome message -->
+            <div id="user-welcome" class="text-light me-3" style="display: none;">
+                Hello, <span id="username-display" class="fw-bold"></span>
+            </div>
+            
+            <!-- Auth buttons -->
+            <div id="auth-buttons">
+                <button class="btn btn-outline-light me-2" id="login-btn" data-bs-toggle="modal" data-bs-target="#authModal" onclick="setAuthMode('login')">
+                    Login
+                </button>
+                <button class="btn btn-light" id="signup-btn" data-bs-toggle="modal" data-bs-target="#authModal" onclick="setAuthMode('signup')">
+                    Sign Up
+                </button>
+            </div>
+            
+            <!-- Logout button -->
+            <button class="btn btn-outline-light" id="logout-btn" style="display: none;" onclick="logout()">
+                Logout
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Auth Modal -->
+<div class="modal fade" id="authModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authModalTitle">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="auth-form" onsubmit="handleAuth(event)">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" required>
+                        <div id="username-error" class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                        <div id="password-error" class="invalid-feedback"></div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

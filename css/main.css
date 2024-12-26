@@ -1,0 +1,139 @@
+/* Main styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Header styles */
+.site-header {
+    background: #333;
+    padding: 1rem;
+}
+
+.site-header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.site-header nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Main content styles */
+main {
+    padding: 2rem;
+    min-height: calc(100vh - 120px);
+}
+
+/* Footer styles */
+.site-footer {
+    background: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Add these styles to your existing CSS */
+
+.login-signup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+}
+
+.form-content {
+    width: 300px;
+}
+
+.error {
+    color: red;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 5px;
+}
+
+.auth-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+#user-welcome {
+    color: white;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+    background: #4CAF50;
+    color: white;
+}
+
+.form-actions button[type="button"] {
+    background: #f44336;
+    color: white;
+}
+
+/* Custom styles to enhance Bootstrap */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+#user-welcome {
+    font-size: 1.1rem;
+}
+
+.modal-content {
+    border-radius: 1rem;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    border-color: #86b7fe;
+}
+
+.invalid-feedback {
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+} 
