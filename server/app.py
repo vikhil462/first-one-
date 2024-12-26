@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-import sqlite3
 from flask_cors import CORS
+import sqlite3
 import bcrypt
 
 app = Flask(__name__)
@@ -13,7 +13,11 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
+            email TEXT UNIQUE NOT NULL,
+            first_name TEXT NOT NULL,
+            last_name TEXT NOT NULL,
+            password TEXT NOT NULL,
+            is_admin BOOLEAN DEFAULT FALSE
         )
     ''')
     conn.commit()
@@ -24,45 +28,75 @@ init_db()
 @app.route('/api/auth/register', methods=['POST'])
 def register():
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
+    required_fields = ['username', 'email', 'firstName', 'lastName', 'password']
     
-    if not username or not password:
-        return jsonify({'error': 'Missing credentials'}), 400
+    # Check if all required fields are present
+    if not all(field in data for field in required_fields):
+        return jsonify({'error': 'Missing required fields'}), 400
     
     try:
-        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # Hash the password
+        hashed = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+        
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
-        c.execute('INSERT INTO users (username, password) VALUES (?, ?)',
-                 (username, hashed))
+        c.execute('''
+            INSERT INTO users (username, email, first_name, last_name, password, is_admin)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (
+            data['username'],
+            data['email'],
+            data['firstName'],
+            data['lastName'],
+            hashed,
+            False
+        ))
         conn.commit()
         conn.close()
-        return jsonify({'message': 'User registered successfully'}), 201
-    except sqlite3.IntegrityError:
-        return jsonify({'error': 'Username already exists'}), 409
+        
+        return jsonify({
+            'message': 'User registered successfully',
+            'username': data['username']
+        }), 201
+        
+    except sqlite3.IntegrityError as e:
+        if 'username' in str(e):
+            return jsonify({'error': 'Username already exists'}), 409
+        return jsonify({'error': 'Email already exists'}), 409
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
     data = request.json
-    username = data.get('username')
+    identifier = data.get('identifier')
     password = data.get('password')
     
-    if not username or not password:
+    if not identifier or not password:
         return jsonify({'error': 'Missing credentials'}), 400
     
     try:
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
-        c.execute('SELECT password FROM users WHERE username = ?', (username,))
+        c.execute('''
+            SELECT username, password, first_name, is_admin 
+            FROM users 
+            WHERE username = ? OR email = ?
+        ''', (identifier, identifier))
+        
         result = c.fetchone()
         conn.close()
         
-        if result and bcrypt.checkpw(password.encode('utf-8'), result[0]):
-            return jsonify({'message': 'Login successful', 'username': username}), 200
+        if result and bcrypt.checkpw(password.encode('utf-8'), result[1]):
+            return jsonify({
+                'message': 'Login successful',
+                'username': result[0],
+                'firstName': result[2],
+                'isAdmin': bool(result[3])
+            }), 200
+            
         return jsonify({'error': 'Invalid credentials'}), 401
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
